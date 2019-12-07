@@ -4,6 +4,8 @@ ARG role=base
 ARG puppet_psk=securepsk
 ARG region=docker
 
+RUN useradd -c 'Choria Emulator' -m choria
+
 RUN rm -rf /var/yum/cache && yum -y install nc sudo bind-utils telnet gaw vi net-tools cronie initscripts openssl which
 
 # We don't want 90% of systemd here

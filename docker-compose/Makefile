@@ -1,7 +1,7 @@
 .PHONY: all kill down 
 
 all: up
-	docker-compose exec shell bash
+	docker-compose exec -u choria -w /home/choria shell bash
 
 up: .build kill down
 	# docker-compose build --parallel
