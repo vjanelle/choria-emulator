@@ -1,0 +1,37 @@
+---
+version: "3.7"
+services:
+  puppet:
+    build:
+      context: ../
+      dockerfile: ./docker-compose/puppet-master/Dockerfile
+    tty: true
+    user: "0:0"
+    stop_signal: "SIGRTMIN+3"
+    environment:
+      container: docker
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - "/run"
+      - "/run/lock"
+      - "/var/lib/journal"
+  broker:
+    depends_on:
+      - puppet
+    tty: true
+    privileged: true
+    build:
+      context: ./base
+      args:
+        role: broker
+    user: "0:0"
+    environment:
+      container: docker
+    stop_signal: "SIGRTMIN+3"
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - "/run"
+      - "/run/lock"
+      - "/var/lib/journal"
