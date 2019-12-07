@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: puppet
+  labels:
+    app: puppet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: puppet
+  template:
+    metadata:
+      labels:
+        app: puppet
+    spec:
+      containers:
+      - name: puppet
+        env:
+          - name: container
+            value: docker
+        image: docker.io/choria/puppet
+        tty: true
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 8140
+        volumeMounts:
+          - mountPath: /run
+            name: run
+          - mountPath: /run/lock
+            name: run-lock
+          - mountPath: /var/lib/journal
+            name: var-lib-journal
+          - mountPath: /sys/fs/cgroup
+            name: cgroup
+            readOnly: true
+      volumes:
+        - name: run
+          emptyDir: {}
+        - name: run-lock
+          emptyDir: {}
+        - name: var-lib-journal
+          emptyDir: {}
+        - name: cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: puppet
+spec:
+  selector:
+    app: puppet
+  ports:
+    - protocol: TCP
+      port: 8140
+      targetPort: 8140
+  clusterIP: None
+  type: ClusterIP

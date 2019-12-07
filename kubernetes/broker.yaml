@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broker
+  labels:
+    app: broker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: broker
+  template:
+    metadata:
+      labels:
+        app: broker
+    spec:
+      containers:
+      - name: broker
+        env:
+          - name: container
+            value: docker
+        image: docker.io/choria/broker
+        tty: true
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 8140
+        volumeMounts:
+          - mountPath: /run
+            name: run
+          - mountPath: /run/lock
+            name: run-lock
+          - mountPath: /var/lib/journal
+            name: var-lib-journal
+          - mountPath: /sys/fs/cgroup
+            name: cgroup
+            readOnly: true
+      volumes:
+        - name: run
+          emptyDir: {}
+        - name: run-lock
+          emptyDir: {}
+        - name: var-lib-journal
+          emptyDir: {}
+        - name: cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker
+spec:
+  selector:
+    app: broker
+  ports:
+    - protocol: TCP
+      port: 4222
+      targetPort: 4222
+  clusterIP: None
+  type: ClusterIP

@@ -2,6 +2,7 @@
 version: "3.7"
 services:
   puppet:
+    image: choria/puppet
     build:
       context: ../
       dockerfile: ./docker-compose/puppet-master/Dockerfile
@@ -17,6 +18,7 @@ services:
       - "/run/lock"
       - "/var/lib/journal"
   broker:
+    image: choria/broker
     depends_on:
       - puppet
     tty: true
@@ -35,6 +37,7 @@ services:
       - "/run/lock"
       - "/var/lib/journal"
   emulator:
+    image: choria/emulator
     depends_on:
       - broker
       - puppet
@@ -54,6 +57,7 @@ services:
       - "/run/lock"
       - "/var/lib/journal"
   shell:
+    image: choria/shell
     depends_on:
       - broker
       - puppet
