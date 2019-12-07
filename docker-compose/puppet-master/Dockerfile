@@ -29,6 +29,7 @@ RUN rpm -ivh http://yum.puppetlabs.com/puppet6/puppet-release-el-7.noarch.rpm
 RUN yum -y install puppet-agent puppetserver git
 RUN echo "extension_requests:" > /etc/puppetlabs/puppet/csr_attributes.yaml
 RUN echo "  pp_preshared_key: ${puppet_psk}" >> /etc/puppetlabs/puppet/csr_attributes.yaml
+RUN echo "${puppet_psk}" > /etc/puppetlabs/puppet/psk.txt
 RUN ln -s /opt/puppetlabs/bin/puppet /opt/puppetlabs/bin/facter /opt/puppetlabs/bin/mco /usr/bin/
 RUN echo "role=${role}" > /opt/puppetlabs/facter/facts.d/role.txt
 RUN echo "region=${region}" > /opt/puppetlabs/facter/facts.d/region.txt
